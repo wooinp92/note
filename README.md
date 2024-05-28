@@ -9,4 +9,8 @@
   
 1. Random이라는 도구를 생성하여 사용  
 2. Math.random() 명령을 사용  
-3. SecureRandom 도구를 생성하여 사용 
+3. SecureRandom 도구를 생성하여 사용
+ 
+```java
+Random r = new Random();
+```
