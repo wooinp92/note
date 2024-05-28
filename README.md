@@ -41,4 +41,8 @@ import는 직접 작성하지 않고 **단축키**인 `ctrl+shift+o`를 누릅�
 
 ![카지노 이미지](https://www.ramadajeju.co.kr/RamadaPlazaJeju_common/images/homepage/facilities/CASINO03.jpg)
 
+오늘도 연봉이 10원 올랐습니다.  
+
+![겨우 10원?](./009.gif)
+
 
