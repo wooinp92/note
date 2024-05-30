@@ -20,7 +20,7 @@ System.out.println(10000 * 3);	//짬뽕 금액 합계
 System.out.println(8000 * 2 + 10000 * 3);	//전체 합계 -> 중복코드
 ```
 
- ## 2. 변수(Variable)
+## 2. 변수(Variable)
 - 값 또는 식의 결과를 잠시 저장해두는 도구
 - 만들 때 형태와 이름을 지정해야 함
 
@@ -46,5 +46,35 @@ System.out.println(jjamTotal);
 System.out.println(total);
 ```
 
+## 3. 정수 특징
+- 정수끼리 계산하면 정수가 나옴
+- '/'는 몫을 구할 수 있고, '%'는 나머지를 구할 수 있다.
+
+```java
+System.out.println(10 / 3);	// 3
+System.out.println(10 % 3);	// 1
+```
+		 	
+- 정수는 종류가 여러 가지이고, 표현 가능한 범위가 다르다.
+- 실제로는 4종류가 있다 (byte / short / int / long) 
+- 정수의 기본값은 int 이다. 따라서 더 큰값에는 long임을 표시해야 한다. 
+- 만약 계산하다 범위가 넘어가면 뒤집힘 현상이 있다.
+
+```java
+int a = 1234567 * 1234567;	//int 범위 초과, ERROR!!
+long a = 1234567L * 1234567L;	//계산하다가 커진 경우 long 사용
+long b = 9999999999L;	//처음부터 값이 큰 경우 long 사용
+
+System.out.println(a);
+System.out.println(b);
+```
+	
 
 [문제풀이01 - 영화금액계산기](https://github.com/wooinp92/kh14/blob/main/day02/src/data/Test03%EC%98%81%ED%99%94%EA%B8%88%EC%95%A1%EA%B3%84%EC%82%B0%EA%B8%B0.java)
+[문제풀이02 - 술집계산기](https://github.com/wooinp92/kh14/blob/main/day02/src/data/Test04%EC%88%A0%EC%A7%91%EA%B3%84%EC%82%B0%EA%B8%B0.java)
+[문제풀이03 - 시간계산기](https://github.com/wooinp92/kh14/blob/main/day02/src/data/Test06%EC%8B%9C%EA%B0%84%EA%B3%84%EC%82%B0%EA%B8%B02.java)
+[문제풀이04 - 주차장계산기](https://github.com/wooinp92/kh14/blob/main/day02/src/data/Test07%EC%A3%BC%EC%B0%A8%EC%9E%A5%EA%B3%84%EC%82%B0%EA%B8%B0.java)
+[문제풀이05 - 숫자자르기](https://github.com/wooinp92/kh14/blob/main/day02/src/data/Test08%EC%88%AB%EC%9E%90%EC%9E%90%EB%A5%B4%EA%B8%B0.java)
+[문제풀이06 - 나이계산기](https://github.com/wooinp92/kh14/blob/main/day02/src/data/Test09%EB%82%98%EC%9D%B4%EA%B3%84%EC%82%B0%EA%B8%B0.java)
+[문제풀이07 - 편의점행사상품](https://github.com/wooinp92/kh14/blob/main/day02/src/data/Test10%ED%8E%B8%EC%9D%98%EC%A0%90%ED%96%89%EC%82%AC%EC%83%81%ED%92%88.java)
+[문제풀이08 - 커피숍계산기](https://github.com/wooinp92/kh14/blob/main/day02/src/data/Test11%EC%BB%A4%ED%94%BC%EC%88%8D%EA%B3%84%EC%82%B0%EA%B8%B0.java)
