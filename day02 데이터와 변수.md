@@ -31,7 +31,7 @@ System.out.println(a);	// a에 저장된 값을 출력해라!
 System.out.println(b);	// b에 저장된 값을 출력해라!
 System.out.println(a + b);
 		
-// 더 완벽한 구조가 되려면... 자장면 금액, 수량, 짬뽕 금액, 수량을 전부 다 따로 저장해야 함
+더 완벽한 구조가 되려면.. 자장면 금액, 수량, 짬뽕 금액, 수량을 전부 다 따로 저장해야 함
 int jja = 8000;		//자장면 금액
 int jjam = 10000;	//짬뽕 금액
 int jjaCount = 2;	//자장면 수량
