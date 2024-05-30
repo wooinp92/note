@@ -71,10 +71,17 @@ System.out.println(b);
 	
 
 [문제풀이01 - 영화금액계산기](https://github.com/wooinp92/kh14/blob/main/day02/src/data/Test03%EC%98%81%ED%99%94%EA%B8%88%EC%95%A1%EA%B3%84%EC%82%B0%EA%B8%B0.java)
+
 [문제풀이02 - 술집계산기](https://github.com/wooinp92/kh14/blob/main/day02/src/data/Test04%EC%88%A0%EC%A7%91%EA%B3%84%EC%82%B0%EA%B8%B0.java)
+
 [문제풀이03 - 시간계산기](https://github.com/wooinp92/kh14/blob/main/day02/src/data/Test06%EC%8B%9C%EA%B0%84%EA%B3%84%EC%82%B0%EA%B8%B02.java)
+
 [문제풀이04 - 주차장계산기](https://github.com/wooinp92/kh14/blob/main/day02/src/data/Test07%EC%A3%BC%EC%B0%A8%EC%9E%A5%EA%B3%84%EC%82%B0%EA%B8%B0.java)
+
 [문제풀이05 - 숫자자르기](https://github.com/wooinp92/kh14/blob/main/day02/src/data/Test08%EC%88%AB%EC%9E%90%EC%9E%90%EB%A5%B4%EA%B8%B0.java)
+
 [문제풀이06 - 나이계산기](https://github.com/wooinp92/kh14/blob/main/day02/src/data/Test09%EB%82%98%EC%9D%B4%EA%B3%84%EC%82%B0%EA%B8%B0.java)
+
 [문제풀이07 - 편의점행사상품](https://github.com/wooinp92/kh14/blob/main/day02/src/data/Test10%ED%8E%B8%EC%9D%98%EC%A0%90%ED%96%89%EC%82%AC%EC%83%81%ED%92%88.java)
+
 [문제풀이08 - 커피숍계산기](https://github.com/wooinp92/kh14/blob/main/day02/src/data/Test11%EC%BB%A4%ED%94%BC%EC%88%8D%EA%B3%84%EC%82%B0%EA%B8%B0.java)
