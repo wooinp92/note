@@ -68,7 +68,9 @@ long b = 9999999999L;	//처음부터 값이 큰 경우 long 사용
 System.out.println(a);
 System.out.println(b);
 ```
-	
+
+
+
 
 [문제풀이01 - 영화금액계산기](https://github.com/wooinp92/kh14/blob/main/day02/src/data/Test03%EC%98%81%ED%99%94%EA%B8%88%EC%95%A1%EA%B3%84%EC%82%B0%EA%B8%B0.java)
 
