@@ -8,16 +8,16 @@
 - 정수(소수점X), 실수(소수점O), 문자, 논리, 문자열 등으로 구분
 
 ```java
-System.out.println(10 + 300);		//정수끼리 계산(괄호 안에 ""쓰면 문자로 인식)
-System.out.println(10.0 + 300.0);	//실수끼리 계산
+	System.out.println(10 + 300);		//정수끼리 계산(괄호 안에 ""쓰면 문자로 인식)
+	System.out.println(10.0 + 300.0);	//실수끼리 계산
 
-(Q)자장면 8천원, 짬뽕 1만원일 때 자장면 2그릇, 짬뽕 3그릇 가격은?
-System.out.println(8000 * 2 + 10000 * 3);
+	(Q)자장면 8천원, 짬뽕 1만원일 때 자장면 2그릇, 짬뽕 3그릇 가격은?
+	System.out.println(8000 * 2 + 10000 * 3);
 		
-소계까지 같이 보여주려면?
-System.out.println(8000 * 2);	//자장면 금액 합계
-System.out.println(10000 * 3);	//짬뽕 금액 합계
-System.out.println(8000 * 2 + 10000 * 3);	//전체 합계 -> 중복코드
+	소계까지 같이 보여주려면?
+	System.out.println(8000 * 2);	//자장면 금액 합계
+	System.out.println(10000 * 3);	//짬뽕 금액 합계
+	System.out.println(8000 * 2 + 10000 * 3);	//전체 합계 -> 중복코드
 ```
 
 ## 2. 변수(Variable)
@@ -25,25 +25,25 @@ System.out.println(8000 * 2 + 10000 * 3);	//전체 합계 -> 중복코드
 - 만들 때 형태와 이름을 지정해야 함
 
 ```java
-int a = 8000 * 2;	//a에 8000 * 2를 계산한 결과를 넣어라!
-int b = 10000 * 3;	//b에 10000 * 3을 계산한 결과를 넣어라!
-System.out.println(a);	// a에 저장된 값을 출력해라!
-System.out.println(b);	// b에 저장된 값을 출력해라!
-System.out.println(a + b);
+	int a = 8000 * 2;	//a에 8000 * 2를 계산한 결과를 넣어라!
+	int b = 10000 * 3;	//b에 10000 * 3을 계산한 결과를 넣어라!
+	System.out.println(a);	// a에 저장된 값을 출력해라!
+	System.out.println(b);	// b에 저장된 값을 출력해라!
+	System.out.println(a + b);
+			
+	더 완벽한 구조가 되려면.. 자장면 금액, 수량, 짬뽕 금액, 수량을 전부 다 따로 저장해야 함
+	int jja = 8000;		//자장면 금액
+	int jjam = 10000;	//짬뽕 금액
+	int jjaCount = 2;	//자장면 수량
+	int jjamCount = 3;	//짬뽕 수량	
 		
-더 완벽한 구조가 되려면.. 자장면 금액, 수량, 짬뽕 금액, 수량을 전부 다 따로 저장해야 함
-int jja = 8000;		//자장면 금액
-int jjam = 10000;	//짬뽕 금액
-int jjaCount = 2;	//자장면 수량
-int jjamCount = 3;	//짬뽕 수량	
+	int jjaTotal = jja * jjaCount;		//자장면 합계
+	int jjamTotal = jjam * jjamCount;	//짬뽕 합계
+	int total = jjaTotal + jjamTotal;	//전체 합계	
 		
-int jjaTotal = jja * jjaCount;		//자장면 합계
-int jjamTotal = jjam * jjamCount;	//짬뽕 합계
-int total = jjaTotal + jjamTotal;	//전체 합계	
-		
-System.out.println(jjaTotal);
-System.out.println(jjamTotal);
-System.out.println(total);
+	System.out.println(jjaTotal);
+	System.out.println(jjamTotal);
+	System.out.println(total);
 ```
 
 ## 3. 정수 특징
@@ -51,8 +51,8 @@ System.out.println(total);
 - '/'는 몫을 구할 수 있고, '%'는 나머지를 구할 수 있다.
 
 ```java
-System.out.println(10 / 3);	// 3
-System.out.println(10 % 3);	// 1
+	System.out.println(10 / 3);	// 3
+	System.out.println(10 % 3);	// 1
 ```
 		 	
 - 정수는 종류가 여러 가지이고, 표현 가능한 범위가 다르다.
@@ -61,12 +61,12 @@ System.out.println(10 % 3);	// 1
 - 만약 계산하다 범위가 넘어가면 뒤집힘 현상이 있다.
 
 ```java
-int a = 1234567 * 1234567;	//int 범위 초과, ERROR!!
-long a = 1234567L * 1234567L;	//계산하다가 커진 경우 long 사용
-long b = 9999999999L;	//처음부터 값이 큰 경우 long 사용
+	int a = 1234567 * 1234567;	//int 범위 초과, ERROR!!
+	long a = 1234567L * 1234567L;	//계산하다가 커진 경우 long 사용
+	long b = 9999999999L;	//처음부터 값이 큰 경우 long 사용
 
-System.out.println(a);
-System.out.println(b);
+	System.out.println(a);
+	System.out.println(b);
 ```
 
 
