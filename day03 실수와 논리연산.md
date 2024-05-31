@@ -21,7 +21,7 @@
 	System.out.println(c);
 	System.out.println(d);
 		
-	//(*중요) 실수가 포함된 계산은 결과가 실수
+//	(*중요) 실수가 포함된 계산은 결과가 실수
 	System.out.println(1.5 + 2.5);	// 4와 4.0은 다르다
 	System.out.println(10 / 3.0);	// 소수점 끝에 5가 나오는 이유 -> 부정확성
 	System.out.println(10 / 3d);	
