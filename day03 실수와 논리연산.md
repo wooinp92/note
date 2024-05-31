@@ -28,6 +28,15 @@
 	System.out.println(10 / 3f);
 ```
 
+[문제풀이01 - 성적계산기](https://github.com/wooinp92/kh14/blob/main/day03/src/data2/Test02%EC%84%B1%EC%A0%81%EA%B3%84%EC%82%B0%EA%B8%B0.java)
+
+[문제풀이02 - 체질량지수BMI계산기](https://github.com/wooinp92/kh14/blob/main/day03/src/data2/Test03%EC%B2%B4%EC%A7%88%EB%9F%89%EC%A7%80%EC%88%98BMI%EA%B3%84%EC%82%B0%EA%B8%B0.java)
+
+[문제풀이03 - 급여계산기](https://github.com/wooinp92/kh14/blob/main/day03/src/data2/Test04%EA%B8%89%EC%97%AC%EA%B3%84%EC%82%B0%EA%B8%B02.java)
+
+[문제풀이04 - PC방계산기](https://github.com/wooinp92/kh14/blob/main/day03/src/data2/Test05PC%EB%B0%A9%EA%B3%84%EC%82%B0%EA%B8%B02.java)
+
+
 ## 2. 논리
 - true(참), false(거짓)을 저장하기 위한 형태
 - 자료형의 이름은 boolean
@@ -79,3 +88,12 @@
 			
 	System.out.println("무임승차 대상인가?");
 	System.out.println(free);
+```
+
+[문제풀이01 - 성인인증프로그램](https://github.com/wooinp92/kh14/blob/main/day03/src/data3/Test02%EC%84%B1%EC%9D%B8%EC%9D%B8%EC%A6%9D%ED%94%84%EB%A1%9C%EA%B7%B8%EB%9E%A82.java)
+
+[문제풀이02 - 숫자판정](https://github.com/wooinp92/kh14/blob/main/day03/src/data3/Test03%EC%88%AB%EC%9E%90%ED%8C%90%EC%A0%95.java)
+
+[문제풀이03 - 건강검진대상자판정](https://github.com/wooinp92/kh14/blob/main/day03/src/data3/Test05%EA%B1%B4%EA%B0%95%EA%B2%80%EC%A7%84%EB%8C%80%EC%83%81%EC%9E%90%ED%8C%90%EC%A0%95.java)
+
+[문제풀이04 - 윤년판정계산기](https://github.com/wooinp92/kh14/blob/main/day03/src/data3/Test06%EC%9C%A4%EB%85%84%ED%8C%90%EC%A0%95%EA%B3%84%EC%82%B0%EA%B8%B0_%EC%A0%9C%EC%B6%9C%EC%9A%A9.java)
