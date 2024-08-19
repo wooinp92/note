@@ -1,0 +1,663 @@
+-- 테이블(table)
+-- 데이터를 저장할 수 있는 도구(데이터베이스 객체 중 하나)
+-- 생성 시 이름과 형태를 지정해야 한다
+-- 가변문자열(varchar2), 고정문자열(char)은 byte 크기를 지정
+-- 숫자는(number)는 자리 수를 지정하며 필수로 해야하는 것은 아님
+-- 날짜(date)는 연/월/일/시/분/초를 모두 사용할 때 쓴다
+
+-- 샘플 : 메달리스트 테이블
+create table medallist(
+name varchar2(21),
+event varchar2(60),
+type char(6),
+gold number,
+silver number,
+bronze number
+);
+drop table medallist;
+
+-- 샘플 : 커피숍메뉴정보 테이블
+create table menu(
+menu_name varchar2(60),
+menu_type varchar2(9),
+menu_price number,
+menu_event char(1)
+);
+drop table menu;
+
+-- 샘플 : 온라인 쇼핑몰 상품 주문 정보
+-- not null 을 항목에 적으면 "필수항목"이 된다
+-- unique 를 항목에 적으면 "중복불가" 처리가 된다
+-- check 항목을 작성하면 데이터 조건을 적을 수 있다(나중에 써도 됨)
+-- default 를 작성하면 "미입력시 기본값"을 지정할 수 있다(not null보다 앞에 적어야 함)
+create table shopingmall(
+shopingmall_name varchar2(30) not null unique,
+shopingmall_type varchar2(6) not null,
+shopingmall_price number not null,
+shopingmall_discount number(3) default 0 not null,
+shopingmall_per number default 1 not null,
+shopingmall_delivery char(1),
+check(shopingmall_price >= 0),
+check(shopingmall_per > 0),
+--check(shopingmall_discount >= 0 and shopingmall_discount <= 100)
+check(shopingmall_discount between 0 and 100),
+--check(shopingmall_type = '라면' or shopingmall_type = '제과')
+check(shopingmall_type in ('라면', '제과')),
+check(shopingmall_delivery = 'Y'),
+--check(shopingmall_name 은 ^[가-힣A-Za-z0-9]{1,20}$ 형식)
+check(regexp_like(shopingmall_name, '^[가-힣A-Za-z0-9]{1,20}$'))
+);
+drop table shopingmall;
+
+-- 샘플 : 온라인 쇼핑몰 상품 주문 정보2
+create table order_info(
+order_info_name varchar2(60) not null unique,
+order_info_type char(6) not null,
+order_info_price number not null,
+order_info_discount number(3) default 0 not null,
+order_info_qty number default 1 not null,
+order_info_early char(1),
+check(order_info_price >= 0),
+check(order_info_qty > 0),
+--check(order_info_discount >= 0 and order_info_discount <= 100)
+check(order_info_discount between 0 and 100),
+--check(order_info_type = '라면' or order_info_type = '제과)
+check(order_info_type in ('라면', '제과')),
+check(order_info_early = 'Y'),
+--check(order_info_name은 ^[가-힣A-Za-z0-9]{1,20}$ 형식)
+check(regexp_like(order_info_name, '^[가-힣A-Za-z0-9]{1,20}$'))
+);
+
+-- 데이터 추가 명령 (unique 지정하면 중복입력x)
+-- insert into shopingmall(항목) values(값)
+insert into order_info(
+	ORDER_INFO_NAME, ORDER_INFO_TYPE, ORDER_INFO_PRICE,
+	ORDER_INFO_DISCOUNT, ORDER_INFO_QTY, ORDER_INFO_EARLY 
+)
+values ('비김면', '라면', 16800, 0, 2, 'Y');
+
+-- default값 지정한 항목은 내용을 적지 않으면 자동으로 default값이 들어간다
+insert into order_info(
+	ORDER_INFO_NAME, ORDER_INFO_TYPE,
+	ORDER_INFO_PRICE, ORDER_INFO_EARLY 
+)
+values ('비빔면', '라면', 16800, 'Y');
+-- 데이터 조회 명령 (' * ' 앞뒤로 띄어쓰기 꼭 있어야 함)
+select * from order_info;
+drop table order_info;
+
+
+-- 샘플 : 휴대폰 판매 정보
+drop table phone;
+create table phone(
+phone_name varchar2(60) not null,
+phone_carrier char(2) not null,
+phone_price number not null,
+phone_period number(2) default 0 not null,
+check(regexp_like(phone_name, '^[가-힣A-Za-z0-9\s]+$')),
+check(phone_carrier in('SK', 'KT', 'LG')),
+check(phone_price >= 0),
+check(phone_period in(0, 24, 36))
+);
+
+insert into phone(
+	PHONE_NAME, PHONE_CARRIER, PHONE_PRICE
+)
+values ('갤럭시Fold4', 'SK', 1800000);
+insert into phone(
+	PHONE_NAME, PHONE_CARRIER, PHONE_PRICE, PHONE_PERIOD 
+)
+values ('갤럭시Fold4', 'KT', 1750000, 24);
+insert into phone(
+	PHONE_NAME, PHONE_CARRIER, PHONE_PRICE, PHONE_PERIOD 
+)
+values ('아이폰15', 'LG', 2000000, 36);
+insert into phone(
+	PHONE_NAME, PHONE_CARRIER, PHONE_PRICE
+)
+values ('아이폰15', 'SK', 1990000);
+
+select * from phone;
+
+
+-- 기본키(Primary key)
+-- 테이블을 대표하는 항목(반장)
+-- 단 하나만 지정할 수 있으며 일반적으로 번호를 지정
+-- 번호는 직접 작성하는 것이 아니라 시퀀스(sequence) 도구 사용
+-- 필수이며(not null), 유일해야하며(unique), 변하지 않아야(primary key) 한다
+drop table poketmon;
+create table poketmon(
+poketmon_no number primary key,
+poketmon_name varchar2(30) not null,
+poketmon_type varchar2(12) not null
+);
+-- 시퀀스 생성 구문 (지울땐 앞에 drop)
+-- 뒤에 cycle을 붙이면 순환 시퀀스가 된다. but 사용x
+create sequence poketmon_seq;
+drop sequence poketmon_seq;
+select * from user_sequences;
+
+insert into poketmon (
+	poketmon_no, poketmon_name, poketmon_type)
+values (poketmon_seq.nextval, '피카츄', '전기');
+
+commit;
+select * from poketmon;
+
+-- 포켓몬 이름 unique 조건 추가 (첨부파일 연동 삭제 후 수정구문 추가)
+delete attachment where attachment_no in (select attachment from poketmon_image);
+delete poketmon;
+commit;
+alter table poketmon modify(poketmon_name unique);
+
+
+-- 샘플 : 게시판 테이블 생성
+-- 다음 요구사항에 맞게 게시판 테이블을 생성하고 데이터를 넣어보세요
+-- ###요구사항
+-- 테이블 이름은 'board' 입니다
+-- 테이블에는 번호, 제목, 내용, 작성자, 조회수라는 항목이 있습니다.
+-- 번호(board_no)은 게시글을 식별하기 위한 고유번호이며 시퀀스로 설정합니다.
+-- 제목(board_titile)은 한글 100자 이내로 설정 가능한 필수 항목입니다.
+-- 내용(board_content)는 허용 가능한 최대 크기로 설정하며 필수 항목입니다.
+-- 작성자(board_writer)는 게시글을 작성한 사람의 아이디이며 영문소문자로 시작하고, 영문소문자+숫자 5~20자 입니다.
+-- 조회수(board_readcount)는 게시글을 조회할 때마다 증가하는 값이며 최초 생성 시 0으로 자동 설정되어야 합니다.
+drop table board;
+create table board(
+board_no number primary key,
+board_title varchar2(300) not null,
+board_content varchar2(4000) not null,
+--board_content clob, (무제한데이터; 속도가 느리다)
+board_writer varchar2(20),
+--작성자가 탈퇴한경우 '알수없음' ; null이 가능하다
+board_readcount number default 0 not null,
+check(regexp_like(board_writer, '^[a-z][a-z0-9]{4,19}$')),
+check(board_readcount >= 0)
+);
+create sequence board_seq;
+drop sequence board_seq;
+
+insert into board(
+	board_no, board_title, board_content, board_writer)
+values(board_seq.nextval, '안녕하세요', '반갑습니다', 'user123');
+insert into board(
+	board_no, board_title, board_content, board_writer)
+values(board_seq.nextval, '가나다라마바사', '아자차카타파하', 'user200');
+insert into board(
+	board_no, board_title, board_content, board_writer)
+values(board_seq.nextval, 'abcdefg', 'hijklmnopqrstuvwxyz', 'user11');
+
+select * from board;
+
+
+-- 날짜데이터
+-- java.sql.Date	; date(초까지만) -> 주로사용
+-- java.sql.Timestamp		; timestamp(밀리초까지)
+
+-- 샘플 : 게시판 테이블 생성 (Date 추가)
+drop table board;
+create table board(
+board_no number primary key,
+board_title varchar2(300) not null,
+board_content varchar2(4000) not null,
+board_writer varchar2(20),
+board_readcount number default 0 not null,
+board_time date default sysdate not null, 
+check(regexp_like(board_writer, '^[a-z][a-z0-9]{4,19}$')),
+check(board_readcount >= 0)
+);
+create sequence board_seq;
+drop sequence board_seq;
+
+insert into board(
+	board_no, board_title, board_content, board_writer)
+values(board_seq.nextval, '안녕하세요', '반갑습니다', 'user123');
+insert into board(
+	board_no, board_title, board_content, board_writer)
+values(board_seq.nextval, '가나다라마바사', '아자차카타파하', 'user200');
+insert into board(
+	board_no, board_title, board_content, board_writer)
+values(board_seq.nextval, 'abcdefg', 'hijklmnopqrstuvwxyz', 'user11');
+
+select * from board;
+
+
+-- 샘플 : 도서대여정보 테이블
+drop table check_out_book;
+create table check_out_book (
+check_no number primary key,
+check_name varchar2(90) not null,
+check_begin date not null,
+check_end date not null,
+check_price number not null
+);
+drop sequence check_out_book_seq;
+create sequence check_out_book_seq;
+
+-- date의 계산 단위는 "일" 이다
+-- 날짜를 지정하면 형식을 알려줘야 함 (예시) yyyy-mm-dd hh24:mi:ss
+-- sysdate+7 ; 현재시간+7일
+-- sysdate+3/24 ; 현재시간+3시간
+insert into check_out_book (
+	check_no, check_name, check_begin, check_end, check_price
+)
+values (
+	check_out_book_seq.nextval, '불변의 법칙',
+	to_date('2024-06-21 16:17:05', 'yyyy-mm-dd hh24:mi:ss'),
+	to_date('2024-06-24', 'yyyy-mm-dd'),
+	22500 
+);
+insert into check_out_book (
+	check_no, check_name, check_begin, check_end, check_price
+)
+values (
+	check_out_book_seq.nextval, '불변의 법칙2',
+	sysdate, sysdate+7,
+	22500 
+);
+insert into check_out_book (
+	check_no, check_name, check_begin, check_end, check_price
+)
+values (
+	check_out_book_seq.nextval, '불변의 법칙3',
+	sysdate, sysdate+3/24,
+	22500 
+);
+
+select * from check_out_book;
+
+
+-- 테이블 생성 실습
+-- 다음 요구사항에 맞게 테이블을 생성하세요
+-- 테이블 생성 후 샘플 데이터를 넣고 출력하세요
+-- ###요구사항
+-- 테이블 이름은 emp 이며 사원정보를 저장합니다.
+-- 사번(emp_no)은 고유번호이며 시퀀스로 부여합니다.
+--  사원명(emp_name)은 사원의 이름이며 한국 이름 형식을 따릅니다.
+-- 부서(emp_dept)는 다음 중 하나의 값을 가져야 합니다.
+--		기획팀, 영업팀, 총무팀, 개발팀, 운영팀
+-- 입사일(emp_date)은 사원의 입사 일자(시간 제외)를 저장합니다.
+-- 직급(emp_rank)은 다음 중 하나의 값을 가져야 합니다.
+--		인턴, 사원, 주임, 대리, 과장, 부장, 이사, 부사장, 사장
+-- 급여액(emp_sal)은 사원의 월 급여액을 저장합니다.
+
+drop table emp;
+create table emp(
+emp_no number primary key,
+emp_name varchar2(21) not null,
+emp_dept char(9) not null,
+emp_date char(10) not null,
+emp_rank varchar2(9) not null,
+emp_sal number not null,
+check(regexp_like(emp_name, '^[가-힣]{2,7}$')),
+check(emp_dept in ('기획팀', '영업팀', '총무팀', '개발팀', '운영팀')),
+check(regexp_like(emp_date, '^(19[0-9]{2}|20([01][0-9]|2[0-3]))-(02-(0[1-9]|1[0-9]|2[0-9])|(0[469]|11)-(0[1-9]|1[0-9]|2[0-9]|30)|(0[13578]|1[02])-(0[1-9]|1[0-9]|2[0-9]|3[01]))$')),
+check(emp_rank in ('인턴', '사원', '주임', '대리', '과장', '부장', '이사', '부사장', '사장')),
+check(emp_sal >= 0)
+);
+
+drop sequence emp_seq;
+create sequence emp_seq;
+
+insert into emp(
+	emp_no, emp_name, emp_dept, emp_date, emp_rank, emp_sal)
+values (emp_seq.nextval, '홍길동', '기획팀', '2020-01-08',
+		'부장', 5000000);
+insert into emp(
+	emp_no, emp_name, emp_dept, emp_date, emp_rank, emp_sal)
+values (emp_seq.nextval, '김철수', '영업팀', '2020-05-10',
+		'과장', 4000000);
+insert into emp(
+	emp_no, emp_name, emp_dept, emp_date, emp_rank, emp_sal)
+values (emp_seq.nextval, '김이사', '총무팀', '2020-05-28',
+		'이사', 7000000);
+
+select * from emp;
+commit;
+
+-- Top N Query 예제 (순위대로 출력하는 예제)
+select * from (
+	select rownum rn, TMP.* from (
+		select * from emp order by emp_sal desc
+	)TMP
+) where rn between 1 and 3;	
+
+
+-- 테이블 정의서 (도서 테이블 생성 실습)
+drop table book;
+create table book(
+book_id number primary key,
+book_title varchar2(300) not null,
+book_author varchar2(90),
+book_publication_date char(10),
+book_price number default 0 not null,
+book_publisher varchar2(90),
+book_page_count number not null,
+book_genre varchar2(9) not null,
+check(regexp_like(book_author, '[^!@#$]+')),
+check(regexp_like(book_publication_date, '^(1[0-9][0-9][0-9]|20([0-1][0-9]|2[0-3]))-(((0[13578]|1[02])-(0[1-9]|1[0-9]|2[0-9]|3[01])|02-(0[1-9]|1[0-9]|2[0-8]))|(0[469]|11)-(0[1-9]|1[0-9]|2[0-9]|30))$')),
+check(book_price >= 0),
+check(book_page_count > 0),
+check(book_genre in ('판타지', '소설', '역사', '과학', '교양'))
+);
+
+drop sequence book_seq;
+create sequence book_seq;
+
+insert into book (
+	book_id, book_title, book_author, book_publication_date,
+	book_price, book_publisher, book_page_count, book_genre
+)
+values (
+	book_seq.nextval, '해리포터와 마법사의 돌', 'J.K. 롤링', '1997-06-26',
+	15000, '문학동네', 320, '판타지'
+);
+insert into book (
+	book_id, book_title, book_author, book_publication_date,
+	book_price, book_publisher, book_page_count, book_genre
+)
+values (
+	book_seq.nextval, '어린왕자', '앙투안 드 생텍쥐페리', '1943-04-06',
+	12000, '열린책들', 130, '소설'
+);
+insert into book (
+	book_id, book_title, book_author, book_publication_date,
+	book_price, book_publisher, book_page_count, book_genre
+)
+values (
+	book_seq.nextval, '삼국지', '나관중', '1522-01-01',
+	30000, '민음사', 850, '역사'
+);
+insert into book (
+	book_id, book_title, book_author, book_publication_date,
+	book_price, book_publisher, book_page_count, book_genre
+)
+values (
+	book_seq.nextval, '데미안', '헤르만 헤세', '1919-01-01',
+	13000, '더클래식', 200, '소설'
+);
+insert into book (
+	book_id, book_title, book_author, book_publication_date,
+	book_price, book_publisher, book_page_count, book_genre
+)
+values (
+	book_seq.nextval, '어린이 교양 과학', '박영규', '2019-07-01',
+	15000, '사계절출판사', 300, '과학'
+);
+insert into book (
+	book_id, book_title, book_author, book_publication_date,
+	book_price, book_publisher, book_page_count, book_genre
+)
+values (
+	book_seq.nextval, '조선왕조실록', '한중록', '1922-05-05',
+	45000, '휴머니스트', 500, '역사'
+);
+insert into book (
+	book_id, book_title, book_author, book_publication_date,
+	book_price, book_publisher, book_page_count, book_genre
+)
+values (
+	book_seq.nextval, '무궁화 꽃이 피었습니다', '김진명', '1933-11-15',
+	10000, '예문아카이브', 360, '소설'
+);
+insert into book (
+	book_id, book_title, book_author, book_publication_date,
+	book_price, book_publisher, book_page_count, book_genre
+)
+values (
+	book_seq.nextval, '토지', '박경리', '1969-01-01',
+	22000, '지식을만드는지식', 700, '소설'
+);
+insert into book (
+	book_id, book_title, book_author, book_publication_date,
+	book_price, book_publisher, book_page_count, book_genre
+)
+values (
+	book_seq.nextval, '지적 대화를 위한 넓고 얕은 지식', '채사장', '2014-12-01',
+	17000, '한빛비즈', 450, '교양'
+);
+insert into book (
+	book_id, book_title, book_author, book_publication_date,
+	book_price, book_publisher, book_page_count, book_genre
+)
+values (
+	book_seq.nextval, '1984', '조지 오웰', '1949-06-08',
+	14000, '열린책들', 280, '소설'
+);
+
+select * from book;
+commit;
+
+
+drop table member;
+create table member (
+member_id varchar2(20) primary key,
+member_pw varchar2(16) not null,
+member_nickname varchar2(30) not null unique,
+member_birth char(10),
+member_contact char(11),
+member_email varchar2(60) not null,
+member_level varchar2(12) default '일반회원' not null,
+member_point number default 0 not null,
+member_post varchar2(6),
+member_address1 varchar2(300),
+member_address2 varchar2(300),
+member_join date default sysdate not null,
+member_login date sysdate not null,
+--조건부분
+check(regexp_like(member_id, '^[a-z][a-z0-9]{4,19}$')),
+check(regexp_like(member_pw, '^[A-Za-z0-9!@#$]{8,16}$')),
+-- '[조건]+'	 ; +는 한개 이상이라는 뜻, 없어도 무방함
+check(regexp_like(member_pw, '[A-Z]+')),
+check(regexp_like(member_pw, '[a-z]+')),
+check(regexp_like(member_pw, '[0-9]+')),
+check(regexp_like(member_pw, '[!@#$]+')),
+check(regexp_like(member_nickname, '^[가-힣0-9]{2,10}$')),
+check(regexp_like(member_birth, '^(19[0-9]{2}|20([01][0-9]|2[0-3]))-(02-(0[1-9]|1[0-9]|2[0-9])|(0[469]|11)-(0[1-9]|1[0-9]|2[0-9]|30)|(0[13578]|1[02])-(0[1-9]|1[0-9]|2[0-9]|3[01]))$')),
+check(regexp_like(member_contact, '^010[1-9][0-9]{7}$')),
+-- check(regexp_like(member_email, '^[a-z][a-z0-9\-_]{4,19}@[a-z0-9]{2,40}\.(co\.kr|net|com|org|dev)$')),
+check(member_level in ('일반회원', '우수회원', '관리자')),
+check(member_point >= 0),
+check(regexp_like(member_post, '^[0-9]{5,6}$'))
+);
+
+insert into member (
+	member_id, member_pw, member_nickname, member_birth, member_contact,
+	member_email, member_post, member_address1, member_address2)
+values (
+	'user123', 'Abcde12345!', '닉네임123', '2000-10-12', '01012345678',
+	'user123@khstu.com', '12556', '양평동4가2', '19층');
+
+insert into member (
+	member_id, member_pw, member_nickname, member_email)
+values (
+	'user345', 'Asdf3456#', '닉네임345', 'user345@khstu.com');
+
+select * from member;
+
+
+insert into member(member_id, member_pw, member_nickname, member_email, member_level)
+values('adminuser1', 'Adminuser1!', '관리자1', 'adminuser1@kh.com', '관리자');
+insert into member(member_id, member_pw, member_nickname, member_email, member_level)
+values('adminuser2', 'Adminuser2!', '관리자2', 'adminuser2@kh.com', '관리자');
+insert into member(member_id, member_pw, member_nickname, member_email, member_level)
+values('adminuser3', 'Adminuser3!', '관리자3', 'adminuser3@kh.com', '관리자');
+insert into member(member_id, member_pw, member_nickname, member_email, member_level)
+values('adminuser4', 'Adminuser4!', '관리자4', 'adminuser4@kh.com', '관리자');
+insert into member(member_id, member_pw, member_nickname, member_email, member_level)
+values('adminuser5', 'Adminuser5!', '관리자5', 'adminuser5@kh.com', '관리자');
+commit;
+
+
+-- 어떤 사용자(testuser1)의 최종 로그인시각을 갱신하는 구문
+SELECT member_id, member_login from member where member_id = 'testuser1';
+
+update member set member_login=sysdate where member_id='testuser1';
+rollback;
+
+update member set member_level='관리자' where member_id='admin1';
+rollback;
+
+
+-- 사용자 차단 테이블
+create sequence block_seq;
+create table block(
+block_no number primary key,
+block_type char(6) not null check(block_type in ('차단', '해제')),
+block_memo varchar2(300) not null,
+block_time date default sysdate not null,
+block_target references member(member_id) on delete cascade
+);
+
+select * from block;
+
+-- testuser3의 마지막 상태를 알고 싶다!
+select max(block_no) from block where block_target='testuser3';	//타켓의 번호 알아내기
+select * from block where block_no=2;	//알아낸 번호 타켓의 상태 조회
+
+-- 서브 쿼리(Sub Query) : SQL 구문을 순차적으로 실행하는 것
+select * from block where block_no = (
+			select max(block_no) from block where block_target = 'testuser3'
+);
+
+-- testuser3의 차단 이력 조회
+select * from block where block_target='testuser3' order by block_no desc;
+commit;
+
+-- 테이블 조인(Table Join)
+-- 여러 테이블에 나눠져 있는 정보를 합쳐서 조회하는 기술
+-- 대표적으로 inner join 과 outer join 이 존재함
+-- 기준이 존재하면 outer join 이고 기준이 존재하지 않으면 inner join
+
+-- (ex) 회원 정보에 차단 이력을 합쳐서 조회 (= outer join) : 멤버테이블에 있으면서 차단테이블에는 없는 경우도 조회됨
+select * from member left outer join block 	-- 멤버를 조회하면서 block을 붙여라 (member <- block : left)
+		on member.member_id = block.block_target;		-- on 연결조건 (ERD에서 연결된 항목이 뭔지 알려줘야 함)
+
+-- (ex) 차단 이력이 있는 회원만 조회 (= inner join) : 멤버테이블, 차단테이블 둘 다 있는 경우만 조회됨
+select * from member inner join block 
+		on member.member_id = block.block_target;
+	
+		
+-- (ex) 회원별 마지막 차단상태목록 조회
+		
+-- block을 조회하세요
+select * from block;
+-- block과 순위(최신순)를 조회하세요
+select block.*, rank() over(order by block_no desc) rnk from block;
+-- block과 순위(아이디별 최신순)를 조회하세요
+select block.*, rank() over(partition by block_target order by block_no desc) rnk from block;
+
+-- 위 결과에서 rnk가 1번인 친구들만 나오세요!
+-- select * from (위 결과) where rnk=1;
+select * from (select block.*, rank() over
+			(partition by block_target order by block_no desc) rnk from block) 
+			where rnk=1;
+		
+-- 최종결과 : member에 최신 차단내역을 합쳐서 조회하세요
+-- select * from member left outer join 마지막 차단상태목록 on 연결조건
+-- select * from member left outer join (위 결과, rnk=1) b on member.member_id = b.block_target;
+select * from member left outer join (
+			select * from (select block.*, rank() over(
+				partition by block_target order by block_no desc) rnk from block
+				) where rnk=1
+					) b on member.member_id = b.block_target;
+
+
+-- 업그레이드
+-- 최신차단내역 구문이 너무 어려우니까 이름을 지어서 저장해두자! (view)
+-- view를 만들려면 권한부여가 필요함 -> 관리자 계정에서 grant create view to kh14; 
+-- create or replace view block_latest as 아까썼던구문;
+create or replace view block_latest as 
+select * from (select block.*, rank() over(
+				partition by block_target order by block_no desc) rnk from block
+				) where rnk=1;
+
+select * from block_latest;	-- view를 만들어두면 테이블처럼 사용 가능 (테이블은 아님 => VO, MAPPER 생성가능)
+
+-- 찐최종
+select * from member left outer join block_latest 
+	on member.member_id = block_latest.block_target;
+
+-- 찐찐최종
+select member.*, block_latest.block_no from member left outer join block_latest
+	on member.member_id=block_latest.block_target;
+
+select M.*, B.block_no, B.block_memo, B.block_time, b.block_target, 
+		nvl(B.block_type, '해제') block_type from member M left outer join block_latest B
+		on M.member_id=B.block_target;
+	
+
+
+-- View (논리 테이블)
+-- 테이블은 아니지만 편의를 위해 테이블처럼 구문을 저장해두는 도구
+--	create or replace view 이름 as 구문
+create or replace view poketmon_status as
+	select poketmon_type title, count(*) cnt from poketmon group by poketmon_type order by cnt desc, title asc;
+
+select * from poketmon_status;
+
+
+create or replace view poketmon_electronic as
+		select * from poketmon where poketmon_type='전기';
+
+select * from poketmon_electronic;
+
+
+
+-- (Q)도서 장르별 서적 개수
+select book_genre, count(book_id) 개수 from book group by book_genre;
+select book_genre, count(*) 개수 from book group by book_genre;
+
+select book_genre, count(*) 개수 from book group by book_genre order by book_genre asc;
+select book_genre, count(*) 개수 from book group by book_genre order by count(*) desc;
+select book_genre, count(*) 개수 from book group by book_genre order by 개수 desc;
+
+-- (Q)도서 출판사별+장르별 서적 개수
+select book_publisher, book_genre, count(*) 개수 from book group by book_publisher, book_genre;
+
+-- (Q) 부서별 팀원 수와 평균 급여액 출력
+select emp_dept, count(emp_no) 팀원수, avg(emp_sal) 평균급여 from emp group by emp_dept;
+select emp_dept, count(*) 팀원수, avg(emp_sal) 평균급여 from emp group by emp_dept;
+
+select emp_dept, count(*) 팀원수, avg(emp_sal) 평균급여 from emp group by emp_dept order by 평균급여 desc;
+
+-- (+추가) 팀원이 3명 이상인 팀만 조회 (=그룹 생성 조건, having)
+select emp_dept, count(*) 팀원수, avg(emp_sal) 평균급여 from emp group by emp_dept having count(*) >= 3 order by 평균급여 desc;
+
+-- (Q) 포켓몬스터 속성별 몬스터수
+select poketmon_type, count(poketmon_no) 몬스터수 from poketmon group by poketmon_type;
+select poketmon_type, count(*) 몬스터수 from poketmon group by poketmon_type;
+
+select poketmon_type, count(*) 몬스터수 from poketmon group by poketmon_type order by 몬스터수 desc, poketmon_type asc;
+
+-- (Q) 회원 등급별 인원수와 포인트 합계
+select member_level, count(member_id) 인원수, sum(member_point) 포인트합계 from member group by member_level;
+select member_level, count(*) 인원수, sum(member_point) 포인트합계 from member group by member_level;
+
+select member_level, count(*) 인원수, sum(member_point) 포인트합계 from member 
+					group by member_level order by 인원수 desc, 포인트합계 desc, member_level asc;
+
+
+				
+select poketmon_type title,count(*) cnt from poketmon group by poketmon_type;
+select emp_dept title,count(*) cnt from emp group by emp_dept;
+select emp_rank title,count(*) cnt from emp group by emp_rank;
+select book_genre title,count(*) cnt from book group by book_genre;
+select member_level title,count(*) cnt from member group by member_level;
+
+
+
+
+
+-- 이메일 인증 테이블
+create table cert (
+cert_email varchar2(60) primary key,
+cert_number char(6) not null,
+cert_time date default sysdate not null
+);
+
+select * from cert;
+
+
+
+
+
