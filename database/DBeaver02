@@ -1,0 +1,329 @@
+
+drop table board;
+create table board(
+board_no number primary key,
+board_title varchar2(300) not null,
+board_content varchar2(4000) not null,
+board_writer references member(member_id) on delete set null,
+board_wtime date default sysdate not null,
+board_utime date,
+board_views number default 0 not null,
+board_likes number default 0 not null,
+board_replies number default 0 not null,
+check(board_no > 0),
+check(board_views >= 0),
+check(board_likes >= 0),
+check(board_replies >= 0)
+);
+create sequence board_seq;
+drop sequence board_seq;
+
+commit;
+
+insert into board(board_no, board_title, board_content, board_writer, board_wtime, board_views) values(board_seq.nextval, '테스트제목', '테스트작성', 'testuser1', '2024-07-12', 0);
+
+insert into board(board_no, board_title, board_content, board_writer, board_wtime, board_views) values(board_seq.nextval, '테스트제목2', '테스트작성2', 'testuser2', '2024-07-13', 0);
+
+insert into board(board_no, board_title, board_content, board_writer, board_wtime, board_views) values(board_seq.nextval, '테스트제목3', '테스트작성3', 'testuser3', '2024-07-14', 10);
+
+select board_seq.nextval from dual;
+rollback;
+
+select * from board;
+
+
+-- 기존의 board 테이블에 항목을 추가(그룹, 상위, 차수)
+-- 추가 : alter table board add(컬럼명 자료형 제약조건);
+-- 변경 : alter table board modify(컬럼명 변경사항);
+-- 제거 : alter table board drop(컬럼명);
+-- 이름 : alter table board rename column 원래이름 to 바꿀이름;
+
+alter table board add(board_group number);	-- 데이터가 이미 있다면 테이블 구조를 바꿀때 초기화 후에 not null 설정가능
+alter table board add(board_target references board(board_no) on delete cascade);	-- 상위글(null 가능)
+alter table board add(board_depth number);
+update board set board_group=board_no, board_depth=0;
+commit;
+alter table board modify(board_group not null);
+alter table board modify(board_depth not null);
+
+alter table board drop(board_target);
+
+
+-- Top N Query
+-- (Q) 게시글을 최신순으로 10개만 조회할 수 있는가? (rownum : db자체 행번호)
+
+-- select rownum, board.* from board order by board_no desc;	
+-- 일반적인 형식으로 정렬을 하면 rownum이 역순으로 뜬다 => 서브쿼리 사용해서 계산순서를 지정해줘야 함
+
+-- select rownum, TMP.* from (...)TMP;		-> TMP는 별칭
+select rownum, TMP.* from (select * from board order by board_no desc
+	)TMP where rownum between 11 and 20;	
+-- 1부터 시작하지 않으면 출력이 안된다 (rownum먼저 생성 후 조건은 나중에 실행되도록 해야함 : 서브쿼리)
+
+select * from (
+	select rownum rn, TMP.* from (
+		select * from board order by board_no desc
+	)TMP
+) where rn between 11 and 20;	
+-- rownum은 select마다 생성할 수 있으므로 별칭(rn)을 줘서 어떤 rownum인지 명확히 지정해야 함
+
+
+select count(*) from board;
+
+
+BEGIN
+    FOR i IN 1..1000 LOOP
+        INSERT INTO board (
+            board_no, 
+            board_title, 
+            board_content, 
+            board_writer, 
+            board_wtime, 
+            board_utime, 
+            board_views, 
+            board_likes, 
+            board_replies
+        ) VALUES (
+            board_seq.NEXTVAL,
+            '게시글 제목 ' || TO_CHAR(i), 
+            '게시글 내용 ' || TO_CHAR(i), 
+            'testuser1', 
+            TRUNC(TO_DATE('2024-01-01', 'YYYY-MM-DD') + DBMS_RANDOM.VALUE(0, SYSDATE - TO_DATE('2024-01-01', 'YYYY-MM-DD'))),
+            NULL, 
+            TRUNC(DBMS_RANDOM.VALUE(0, 1000)), 
+            TRUNC(DBMS_RANDOM.VALUE(0, 1000)), 
+            0
+        );
+    END LOOP;
+    COMMIT;
+END;
+/
+
+
+
+
+-- 게시판 새로생성 (최종버전)
+
+drop table board;
+create table board (
+board_no number primary key,
+board_title varchar2(300 byte) not null,
+board_content varchar2(4000 byte) not null,
+board_writer references member(member_id) on delete set null,
+board_wtime date default sysdate not null,
+board_utime date,
+board_views number default 0 not null,
+board_likes number default 0 not null,
+board_replies number default 0 not null,
+board_group number not null,
+board_target references board(board_no) on delete cascade,
+board_depth number not null,
+check(board_no > 0),
+check(board_views >= 0),
+check(board_likes >= 0),
+check(board_replies >= 0),
+check(board_group > 0),
+check(board_depth >= 0)
+);
+
+drop sequence board_seq;
+create sequence board_seq start with 10;
+
+
+insert into board(board_no, board_title, board_content, board_writer, board_group, board_target, board_depth)
+values(1, '첫 번째 게시글', '첫 번째 게시글 내용', 'testuser1', 1, null, 0);
+insert into board(board_no, board_title, board_content, board_writer, board_group, board_target, board_depth)
+values(2, '두 번째 게시글', '두 번째 게시글 내용', 'testuser1', 2, null, 0);
+insert into board(board_no, board_title, board_content, board_writer, board_group, board_target, board_depth)
+values(3, '세 번째 게시글', '세 번째 게시글 내용', 'testuser1', 2, 2, 1);
+insert into board(board_no, board_title, board_content, board_writer, board_group, board_target, board_depth)
+values(4, '네 번째 게시글', '네 번째 게시글 내용', 'testuser1', 2, 2, 1);
+insert into board(board_no, board_title, board_content, board_writer, board_group, board_target, board_depth)
+values(5, '다섯 번째 게시글', '다섯 번째 게시글 내용', 'testuser1', 2, 3, 2);
+insert into board(board_no, board_title, board_content, board_writer, board_group, board_target, board_depth)
+values(6, '여섯 번째 게시글', '여섯 번째 게시글 내용', 'testuser1', 2, 4, 2);
+insert into board(board_no, board_title, board_content, board_writer, board_group, board_target, board_depth)
+values(7, '일곱 번째 게시글', '일곱 번째 게시글 내용', 'testuser1', 7, null, 0);
+insert into board(board_no, board_title, board_content, board_writer, board_group, board_target, board_depth)
+values(8, '여덟 번째 게시글', '여덟 번째 게시글 내용', 'testuser1', 7, 7, 1);
+insert into board(board_no, board_title, board_content, board_writer, board_group, board_target, board_depth)
+values(9, '아홉 번째 게시글', '아홉 번째 게시글 내용', 'testuser1', 2, 3, 2);
+
+
+commit;
+
+select * from board;
+
+
+-- 게시판 좋아요 구현
+drop table board_like;
+create table board_like (
+member_id references member(member_id) on delete cascade,
+board_no references board(board_no) on delete cascade,
+primary key(member_id, board_no)
+);
+
+
+/*
+-- <답글게시판 구현>
+
+-- 1. 게시글 목록을 조회할건데
+select 항목 from board
+
+-- 2. 게시글은 트리구조로 연결되어 있다 [ 글번호(상위개념) = 상위글번호(하위개념) ]
+connect by prior board_no=board_target
+
+-- 3. 연결된 구조의 시작점은 상위글 번호가 null인 글이다
+start with board_target is null
+
+-- 4. 조회할 때는 (1)그룹이 큰것부터 (2)그룹이 같으면 번호가 작은것부터 연쇄적으로 뽑아서 정렬해서 출력
+order siblings by board_group desc, board_no asc
+*/
+
+
+
+-- <멘션형 게시판 구현>
+-- 원본글이 있는 경우 조인으로 같이 조회
+-- (중요) 변수명이 겹치므로 별칭을 지정해줘야함
+select 
+	B.board_no 멘션대상번호, 
+	B.board_title 멘션대상제목,
+	A.* 
+from board A left outer join board B on A.board_target=B.board_no;
+
+
+
+
+
+
+-- 첨부파일 테이블
+drop sequence attachment_seq;
+create sequence attachment_seq;
+drop table attachment;
+create table attachment(
+attachment_no number primary key,
+attachment_name varchar2(255) not null,
+attachment_type varchar2(90) not null,
+attachment_size number not null
+);
+
+-- 포켓몬 이미지 테이블(연결테이블)
+drop table poketmon_image;
+create table poketmon_image(
+poketmon references poketmon(poketmon_no) on delete cascade,
+attachment references attachment(attachment_no) on delete cascade,
+primary key(poketmon, attachment)
+);
+
+commit;
+
+
+select * from poketmon;
+select * from attachment;
+select * from poketmon_image;
+
+delete attachment;
+
+
+-- 사원 이미지 테이블
+drop table emp_image;
+create table emp_image(
+emp references emp(emp_no) on delete cascade,
+attachment references attachment(attachment_no) on delete cascade,
+primary key(emp, attachment)
+);
+commit;
+
+select * from emp;
+select * from attachment;
+select * from emp_image;
+
+
+-- 도서 이미지 테이블
+drop table book_image;
+create table book_image(
+book references book(book_id) on delete cascade not null,
+attachment references attachment(attachment_no) on delete cascade not null,
+primary key(book, attachment)
+);
+commit;
+
+select * from book;
+select * from attachment;
+select * from book_image; 
+
+select min(attachment) from book_image where book = 61;	-- 첫번째 이미지 (섬네일)
+select max(attachment) from book_image where book = 61;	-- 마지막 이미지
+
+
+-- 회원 이미지 테이블
+-- 회원 한명당 한개의 프로필만 가질 수 있다면 일대일 관계 (회원아이디를 기본키로 설정)
+drop table member_image;
+create table member_image(
+member references member(member_id) on delete cascade not null,
+attachment references attachment(attachment_no) on delete cascade not null,
+primary key(member),
+unique(member, attachment)
+);
+commit;
+
+select * from member;
+select * from  attachment;
+select * from member_image;
+
+
+
+
+-- 댓글 테이블
+drop table reply;
+create table reply(
+reply_no number primary key,
+reply_writer references member(member_id) on delete cascade not null,
+reply_origin references board(board_no) on delete cascade not null,
+reply_content varchar2(1000) not null,
+reply_wtime date default sysdate not null,
+reply_utime date
+);
+
+drop sequence reply_seq;
+create sequence reply_seq;
+
+select * from reply;
+
+
+-- 댓글 등록
+select reply_seq.nextval from dual;
+
+insert into reply(reply_no, reply_writer, reple_content, reply_origin)
+values(1, 'testuser1', '1등!', 50);
+
+commit;
+
+
+-- 댓글 더미데이터
+begin
+  for i in 1..200 loop
+    insert into reply (reply_no, reply_writer, reply_origin, reply_content, reply_wtime)
+    values (reply_seq.nextval, 'testuser1', 45, 'Dummy reply ' || i, sysdate);
+  end loop;
+end;
+
+commit;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
